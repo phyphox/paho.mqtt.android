@@ -3,14 +3,16 @@
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution. 
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at 
+ * The Eclipse Public License is available at
  *    http://www.eclipse.org/legal/epl-v10.html
- * and the Eclipse Distribution License is available at 
+ * and the Eclipse Distribution License is available at
  *   http://www.eclipse.org/org/documents/edl-v10.php.
  */
 package org.eclipse.paho.android.service;
+
+import static android.app.PendingIntent.FLAG_IMMUTABLE;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -73,8 +75,13 @@ class AlarmPingSender implements MqttPingSender {
 		Log.d(TAG, "Register alarmreceiver to MqttService"+ action);
 		service.registerReceiver(alarmReceiver, new IntentFilter(action));
 
-		pendingIntent = PendingIntent.getBroadcast(service, 0, new Intent(
-				action), PendingIntent.FLAG_UPDATE_CURRENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingIntent = PendingIntent.getBroadcast(service, 0, new Intent(
+                    action), PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            pendingIntent = PendingIntent.getBroadcast(service, 0, new Intent(
+                    action), PendingIntent.FLAG_UPDATE_CURRENT);
+        }
 
 		schedule(comms.getKeepAlive());
 		hasStarted = true;
@@ -95,7 +102,7 @@ class AlarmPingSender implements MqttPingSender {
 			try{
 				service.unregisterReceiver(alarmReceiver);
 			}catch(IllegalArgumentException e){
-				//Ignore unregister errors.			
+				//Ignore unregister errors.
 			}
 		}
 	}
