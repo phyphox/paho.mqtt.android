@@ -3,6 +3,8 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
+    namespace "org.eclipse.paho.android.service"
+
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion rootProject.ext.compileSdkVersion
