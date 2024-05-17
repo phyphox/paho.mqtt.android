@@ -6,7 +6,7 @@ android {
     namespace "org.eclipse.paho.android.service"
 
     defaultConfig {
-        minSdkVersion 9
+        minSdkVersion 14
         targetSdkVersion rootProject.ext.compileSdkVersion
 
         testApplicationId "org.eclipse.paho.android.service.test"
