@@ -13,6 +13,7 @@
 package org.eclipse.paho.android.service;
 
 import static android.app.PendingIntent.FLAG_IMMUTABLE;
+import static android.content.Context.RECEIVER_NOT_EXPORTED;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -73,7 +74,10 @@ class AlarmPingSender implements MqttPingSender {
 		String action = MqttServiceConstants.PING_SENDER
 				+ comms.getClient().getClientId();
 		Log.d(TAG, "Register alarmreceiver to MqttService"+ action);
-		service.registerReceiver(alarmReceiver, new IntentFilter(action));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+		    service.registerReceiver(alarmReceiver, new IntentFilter(action), RECEIVER_NOT_EXPORTED);
+        else
+            service.registerReceiver(alarmReceiver, new IntentFilter(action));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             pendingIntent = PendingIntent.getBroadcast(service, 0, new Intent(
